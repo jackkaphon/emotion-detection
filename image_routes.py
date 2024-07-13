@@ -57,11 +57,12 @@ def train_image():
             image_number = len(existing_images) + 1
             new_image_name = f"{image_number}.jpg"
             file.save(os.path.join(person_folder, new_image_name))
+
+            # Train the faces
+            trained = train_faces()
+            return 'Training completed'
         else:
             return errorResponse('Invalid file type', 400)
-
-        result = train_faces()
-        return 'TRAINING COMPLETED'
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -123,5 +124,14 @@ def recognize_image():
                     {"name": name, "location": face_location, "emotion": emotion})
 
         return jsonify(recognized_faces)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@image_bp.route('/custom_train', methods=['POST'])
+def custom_train_image():
+    try:
+        trained = train_faces()
+        return 'Training completed'
     except Exception as e:
         return jsonify({'error': str(e)}), 500
